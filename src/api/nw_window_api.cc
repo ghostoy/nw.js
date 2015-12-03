@@ -39,6 +39,9 @@
 
 #if defined(OS_LINUX)
 #include "chrome/browser/ui/libgtk2ui/gtk2_ui.h"
+#endif
+
+#if defined(OS_LINUX) || defined(OS_WIN)
 #include "content/nw/src/browser/menubar_view.h"
 #include "content/nw/src/browser/browser_view_layout.h"
 using nw::BrowserViewLayout;
@@ -55,8 +58,11 @@ using ui_zoom::ZoomController;
 
 using nw::Menu;
 
-#if defined(OS_LINUX)
+#if defined(OS_LINUX) || defined(OS_WIN)
 using nw::MenuBarView;
+#endif
+
+#if defined(OS_LINUX)
 static void SetDeskopEnvironment() {
   static bool runOnce = false;
   if (runOnce) return;
@@ -325,7 +331,7 @@ bool NwCurrentWindowInternalSetMenuFunction::RunAsync() {
   NWChangeAppMenu(menu);
 #endif
 
-#if defined(OS_LINUX)
+#if defined(OS_LINUX) || defined(OS_WIN)
   native_app_window::NativeAppWindowViews* native_app_window_views =
       static_cast<native_app_window::NativeAppWindowViews*>(
           window->GetBaseWindow());
@@ -335,23 +341,6 @@ bool NwCurrentWindowInternalSetMenuFunction::RunAsync() {
   native_app_window_views->AddChildView(menubar);
   menubar->UpdateMenu(menu->model());
   native_app_window_views->layout_();
-  native_app_window_views->SchedulePaint();
-#endif
-  // The menu is lazily built.
-#if defined(OS_WIN) //FIXME
-  menu->Rebuild();
-  menu->SetWindow(window);
-
-  native_app_window::NativeAppWindowViews* native_app_window_views =
-      static_cast<native_app_window::NativeAppWindowViews*>(
-          window->GetBaseWindow());
-
-  // menu is nwapi::Menu, menu->menu_ is NativeMenuWin,
-  BOOL ret = ::SetMenu(views::HWNDForWidget(native_app_window_views->widget()->GetTopLevelWidget()), menu->menu_->GetNativeMenu());
-  if (!ret)
-	  LOG(ERROR) << "error setting menu";
-
-  ::DrawMenuBar(views::HWNDForWidget(native_app_window_views->widget()->GetTopLevelWidget()));
   native_app_window_views->SchedulePaint();
 #endif
   //FIXME menu->UpdateKeys( native_app_window_views->widget()->GetFocusManager() );
