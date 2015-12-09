@@ -44,7 +44,6 @@ void MenuItem::Create(const base::DictionaryValue& option) {
   is_enabled_ = true;
   type_ = "normal";
   submenu_ = NULL;
-  super_down_flag_ = false;
   meta_down_flag_ = false;
 
   focus_manager_ = NULL;
@@ -63,33 +62,30 @@ void MenuItem::Create(const base::DictionaryValue& option) {
 
   ui::KeyboardCode keyval = ui::VKEY_UNKNOWN;
 
-
-  if (key.size() == 0){
+  keyval = ::GetKeycodeFromText(key);
+  if (keyval == ui::VKEY_UNKNOWN){
     enable_shortcut_ = false;
   } else {
     enable_shortcut_ = true;
-    keyval = ::GetKeycodeFromText(key);
+    //only code for ctrl, shift, alt, super and meta modifiers
+    int modifiers_value = ui::EF_NONE;
+    if (modifiers.find("ctrl")!=std::string::npos){
+      modifiers_value |= ui::EF_CONTROL_DOWN;
+    }
+    if (modifiers.find("shift")!=std::string::npos){
+      modifiers_value |= ui::EF_SHIFT_DOWN ;
+    }
+    if (modifiers.find("alt")!=std::string::npos){
+      modifiers_value |= ui::EF_ALT_DOWN;
+    }
+    if (modifiers.find("super")!=std::string::npos || modifiers.find("cmd")!=std::string::npos){
+      modifiers_value |= ui::EF_COMMAND_DOWN;
+    }
+    if (modifiers.find("meta")!=std::string::npos){
+      meta_down_flag_ = true;
+    }
+    accelerator_ = ui::Accelerator(keyval,modifiers_value);
   }
-
-  //only code for ctrl, shift, alt, super and meta modifiers
-  int modifiers_value = ui::EF_NONE;
-  if (modifiers.find("ctrl")!=std::string::npos){
-    modifiers_value = modifiers_value | ui::EF_CONTROL_DOWN;
-  }
-  if (modifiers.find("shift")!=std::string::npos){
-    modifiers_value = modifiers_value | ui::EF_SHIFT_DOWN ;
-  }
-  if (modifiers.find("alt")!=std::string::npos){
-    modifiers_value = modifiers_value | ui::EF_ALT_DOWN;
-  }
-  if (modifiers.find("super")!=std::string::npos){
-    super_down_flag_ = true;
-  }
-  if (modifiers.find("meta")!=std::string::npos){
-    meta_down_flag_ = true;
-  }
-  accelerator_ = ui::Accelerator(keyval,modifiers_value);
-
 
   std::string icon;
   if (option.GetString("icon", &icon) && !icon.empty())
@@ -137,6 +133,7 @@ void MenuItem::SetIconIsTemplate(bool isTemplate) {
 }
 
 void MenuItem::SetTooltip(const std::string& tooltip) {
+  is_modified_ = true;
   tooltip_ = base::UTF8ToUTF16(tooltip);
   if (menu_)
     menu_->UpdateStates();
@@ -177,16 +174,9 @@ void MenuItem::UpdateKeys(views::FocusManager *focus_manager){
 
 #if defined(OS_WIN) || defined(OS_LINUX)
 bool MenuItem::AcceleratorPressed(const ui::Accelerator& accelerator) {
-
 #if defined(OS_WIN)
-  if (super_down_flag_){
-    if ( ( (::GetKeyState(VK_LWIN) & 0x8000) != 0x8000)
-         || ( (::GetKeyState(VK_LWIN) & 0x8000) != 0x8000) ){
-      return true;
-    }
-  }
-  if (meta_down_flag_){
-    if ( (::GetKeyState(VK_APPS) & 0x8000) != 0x8000 ){
+  if (meta_down_flag_) {
+    if ((::GetKeyState(VK_APPS) & 0x8000) != 0x8000) {
       return true;
     }
   }
