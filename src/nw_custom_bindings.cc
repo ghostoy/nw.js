@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "content/nw/src/nw_custom_bindings.h"
+#include "content/nw/src/api/nw_util.h"
 
 #include "content/renderer/render_view_impl.h"
 #include "content/public/renderer/render_thread.h"
@@ -113,6 +114,9 @@ NWCustomBindings::NWCustomBindings(ScriptContext* context)
                            base::Unretained(this)));
   RouteFunction("callInWindow",
                 base::Bind(&NWCustomBindings::CallInWindow,
+                           base::Unretained(this)));
+  RouteFunction("normalizeKeyString",
+                base::Bind(&NWCustomBindings::NormalizeKeyString,
                            base::Unretained(this)));
 }
 
@@ -306,6 +310,22 @@ void NWCustomBindings::SetDevToolsJail(const v8::FunctionCallbackInfo<v8::Value>
     main_frame->setDevtoolsJail(blink::WebFrame::fromFrame(iframe->contentFrame()));
   }
   args.GetReturnValue().Set(v8::Undefined(isolate));
+  return;
+}
+
+void NWCustomBindings::NormalizeKeyString(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  v8::Isolate* isolate = args.GetIsolate();
+  if (!args.Length())
+    return;
+  std::string key = *v8::String::Utf8Value(args[0]);
+  const ui::Accelerator accelerator = nw::util::ConvertStringToAccelerator(key);
+  if (accelerator.key_code() == ui::VKEY_UNKNOWN) {
+    args.GetReturnValue().Set(isolate->ThrowException(v8::Exception::Error(v8::String::NewFromUtf8(isolate,
+                                     "Invalid key"))));
+    return;
+  }
+  std::string normalizedKey = nw::util::ConvertAcceleratorToString(accelerator);
+  args.GetReturnValue().Set(v8::String::NewFromUtf8(isolate, normalizedKey.c_str()));
   return;
 }
 

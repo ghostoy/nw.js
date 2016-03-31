@@ -26,6 +26,7 @@
 #include "base/values.h"
 #include "content/nw/src/api/object_manager.h"
 #include "content/nw/src/api/menu/menu.h"
+#include "content/nw/src/api/nw_util.h"
 #include "content/nw/src/nw_base.h"
 #include "content/nw/src/nw_content.h"
 #include "content/nw/src/nw_package.h"
@@ -67,27 +68,13 @@ void MenuItem::Create(const base::DictionaryValue& option) {
 
   ui::KeyboardCode keyval = ui::VKEY_UNKNOWN;
 
-  keyval = GetKeycodeFromText(key);
+  keyval = nw::util::GetKeycodeFromText(key);
   if (keyval == ui::VKEY_UNKNOWN){
     enable_shortcut_ = false;
   } else {
     enable_shortcut_ = true;
     //only code for ctrl, shift, alt, super and meta modifiers
-    int modifiers_value = ui::EF_NONE;
-    if (modifiers.find("ctrl")!=std::string::npos){
-      modifiers_value |= ui::EF_CONTROL_DOWN;
-    }
-    if (modifiers.find("shift")!=std::string::npos){
-      modifiers_value |= ui::EF_SHIFT_DOWN ;
-    }
-    if (modifiers.find("alt")!=std::string::npos){
-      modifiers_value |= ui::EF_ALT_DOWN;
-    }
-    if (modifiers.find("super")!=std::string::npos
-     || modifiers.find("cmd")!=std::string::npos
-     || modifiers.find("command")!=std::string::npos){
-      modifiers_value |= ui::EF_COMMAND_DOWN;
-    }
+    int modifiers_value = nw::util::GetModifiersFromText(modifiers);
     if (modifiers.find("meta")!=std::string::npos){
       meta_down_flag_ = true;
     }

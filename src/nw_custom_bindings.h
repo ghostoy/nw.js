@@ -27,6 +27,7 @@ class NWCustomBindings : public ObjectBackedNativeHandler {
   void GetRoutingID(const v8::FunctionCallbackInfo<v8::Value>& args);
   void GetWidgetRoutingID(const v8::FunctionCallbackInfo<v8::Value>& args);
   void CallInWindow(const v8::FunctionCallbackInfo<v8::Value>& args);
+  void NormalizeKeyString(const v8::FunctionCallbackInfo<v8::Value>& args);
 };
 
 }  // namespace extensions

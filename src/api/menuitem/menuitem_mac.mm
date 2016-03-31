@@ -25,6 +25,7 @@
 #include "content/nw/src/api/object_manager.h"
 #include "content/nw/src/api/menu/menu.h"
 #include "content/nw/src/api/menuitem/menuitem_delegate_mac.h"
+#include "content/nw/src/api/nw_util.h"
 #include "ui/events/keycodes/keyboard_code_conversion_mac.h"
 
 namespace nw{
@@ -119,7 +120,7 @@ void MenuItem::SetLabel(const std::string& label) {
 }
 
 void MenuItem::SetKey(const std::string& key) {
-  ui::KeyboardCode key_code = GetKeycodeFromText(key);
+  ui::KeyboardCode key_code = nw::util::GetKeycodeFromText(key);
   NSString* key_equivalent;
   if (ui::VKEY_UNKNOWN == key_code) { // legacy key code support
     key_equivalent = [NSString stringWithUTF8String:key.c_str()];
@@ -135,15 +136,19 @@ void MenuItem::SetKey(const std::string& key) {
 
 void MenuItem::SetModifiers(const std::string& modifiers) {
   NSUInteger mask = 0;
-  NSString* nsmodifiers = [NSString stringWithUTF8String:modifiers.c_str()];
-  if([nsmodifiers rangeOfString:@"shift"].location != NSNotFound)
-    mask = mask|NSShiftKeyMask;
-  if([nsmodifiers rangeOfString:@"cmd"].location != NSNotFound)
-    mask = mask|NSCommandKeyMask;
-  if([nsmodifiers rangeOfString:@"alt"].location != NSNotFound)
-    mask = mask|NSAlternateKeyMask;
-  if([nsmodifiers rangeOfString:@"ctrl"].location != NSNotFound)
-    mask = mask|NSControlKeyMask;
+  int modifier_value = nw::util::GetModifiersFromText(modifiers);
+  if(modifier_value & ui::EF_COMMAND_DOWN) {
+    mask |= NSCommandKeyMask;
+  }
+  if(modifier_value & ui::EF_CONTROL_DOWN) {
+    mask |= NSControlKeyMask;
+  }
+  if(modifier_value & ui::EF_SHIFT_DOWN) {
+    mask |= NSShiftKeyMask;
+  }
+  if(modifier_value & ui::EF_ALT_DOWN) {
+    mask |= NSAlternateKeyMask;
+  }
   [menu_item_ setKeyEquivalentModifierMask:mask];
 }
 

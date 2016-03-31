@@ -6,26 +6,14 @@
 [implemented_in="content/nw/src/api/nw_shortcut_api.h"]
 namespace nw.Shortcut {
 
-  dictionary Modifiers {
-    boolean     command;
-    boolean     ctrl;
-    boolean     alt;
-    boolean     shift;
-  };
-
-  dictionary Accelerator {
-    DOMString   key;
-    Modifiers   modifiers;
-  };
-
   interface Events {
-    static void onKeyPressed(Accelerator accelerator);
+    static void onKeyPressed(DOMString accelerator);
   };
 
   interface Functions {
 
-    static boolean registerAccelerator(Accelerator accelerator);
-    static boolean unregisterAccelerator(Accelerator accelerator);
+    static boolean registerAccelerator(DOMString accelerator);
+    static boolean unregisterAccelerator(DOMString accelerator);
 
   };
 
