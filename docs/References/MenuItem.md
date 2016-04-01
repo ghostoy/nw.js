@@ -110,12 +110,7 @@ A single character string to specify the shortcut key for the menu item.
 
 ### Valid Keys for All Platfroms
 
-* Alphabet: `a`-`z`
-* Digits: `0`-`9`
-* Other keys on main area: `[` , `]` , `'` , `,` , `.` , `/` , `` ` `` , `-` , `=` , `\` , `'` , `;` , `Tab`
-* `Esc`
-* `Down` , `Up` , `Left` , `Right`
-* [W3C DOM Level 3 KeyboardEvent Key Values](http://www.w3.org/TR/DOM-Level-3-Events-key/): `KeyA` (same as `A`), `Escape` (same as `Esc`), `F1`, `ArrowDown` (same as `Down`) etc.
+See [supported keys in Shortcut.key](Shortcut.md#supported-keys).
 
 ### Special Keys for Mac Only
 On Mac, you can also use special keys as shortcut key with `String.fromCharCode(specialKey)`. Here are some useful keys:
@@ -132,9 +127,9 @@ For full list of special keys supported on Mac, see [NSMenuItem.keyEquivalent](h
 
 ## item.modifiers
 
-A string to specify the modifier keys for the shortcut of the menu item. It should be the concatenation of the following strings: `cmd` / `command` / `super`, `shift`, `ctrl`, `alt`. e.g. `"cmd+shift+alt"`.
+A string to specify the modifier keys for the shortcut of the menu item.
 
-`cmd` represents different keys on all platforms: Windows key (<kbd>Windows</kbd>) on Windows and Linux, Apple key (<kbd>&#8984;</kbd>) on Mac. `super` and `command` are aliases of `cmd`.
+See [supported modifiers in Shortcut.key](Shortcut.md#supported-modifiers).
 
 ## Event: click
 

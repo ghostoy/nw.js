@@ -55,44 +55,34 @@ Create new `Shortcut`, `option` is an object contains initial settings for the `
 
 ## shortcut.key
 
-Get the `key` of a `Shortcut`. It is a string to specify the shortcut key, like `"Ctrl+Alt+A"`. The key is consisted of zero or more _modifiers_ and a _key_ on your keyboard. Only one key code is supported. Key code is case insensitive.
-
-List of supported modifiers:
-
-* `Ctrl`
-* `Alt`
-* `Shift`
-* `Command`: `Command` modifier maps to Apple key (<kbd>&#8984;</kbd>) on Mac, and maps to the Windows key on Windows and Linux.
-
-List of supported keys:
-
-* Alphabet: `A`-`Z`
-* Digits: `0`-`9`
-* Function Keys: `F1`-`F24`
-* `Comma`
-* `Period`
-* `Tab`
-* `Home` / `End` / `PageUp` / `PageDown` / `Insert` / `Delete`
-* `Up` / `Down` / `Left` / `Right`
-* `MediaNextTrack` / `MediaPlayPause` / `MediaPrevTrack` / `MediaStop`
-* `Comma` or `,`
-* `Period` or `.`
-* `Tab` or `\t`
-* `Backquote` or `` ` ``
-* `Enter` or `\n`
-* `Minus` or `-`
-* `Equal` or `=`
-* `Backslash` or `\`
-* `Semicolon` or `;`
-* `Quote` or `'`
-* `BracketLeft` or `[`
-* `BracketRight` or `[`
-* `Escape`
-* [DOM Level 3 W3C KeyboardEvent Code Values](http://www.w3.org/TR/DOM-Level-3-Events-code/)
+Get the `key` of a `Shortcut`. It is a string to specify the shortcut key, like `"Ctrl+Alt+A"`. The key is consisted of zero or more _modifiers_ and a _key_ on your keyboard.
 
 !!! warning "Single Key without Modifiers"
     The API `App.registerGlobalHotKey()` can support applications intercepting a single key (like `{ key: "A"}`). But users will not be able to use "A" normally any more until the app unregisters it. However, the API doesn't limit this usage, and it would be useful if the applications wants to listen Media Keys.
     **Only use zero modifier when you are knowing what your are doing.**
+
+### Supported Modifiers
+
+Following key modifiers are supported. And all modifiers are **case insensitive**.
+
+* `Ctrl`: <kbd>Ctrl</kbd>
+* `Alt`: <kbd>Alt</kbd>
+* `Shift`: <kbd>Shift</kbd>
+* `Command`: `Command` modifier maps to Apple key (<kbd>&#8984;</kbd>) on Mac, and maps to the Windows key on MS Windows and Linux.
+* `Cmd`, `Super`: aliases to `Command`
+
+### Supported Keys
+
+All key listed in [W3C DOM Level 3 KeyboardEvent Key Values](http://www.w3.org/TR/DOM-Level-3-Events-key/) are supported, such as `PageDown`, `Home`, `Escape`, `Comma`, `Slash`, `Numpad1` etc. And following aliases can also be used for convenience.
+
+Keys are **case insensitive** and you can have **exactly one key**.
+
+* Alphabet: `a`-`z`
+* Digits: `0`-`9`
+* Other keys on main area: `[` , `]` , `'` , `,` , `.` , `/` , `` ` `` , `-` , `=` , `\` , `'` , `;`
+* Functional Keys: `Esc`
+* Arrow Keys: `Down` , `Up` , `Left` , `Right`
+* Media Keys: `MediaNextTrack`, `MediaPrevTrack` (backward compatible with 0.12.x)
 
 ## shortcut.active
 
