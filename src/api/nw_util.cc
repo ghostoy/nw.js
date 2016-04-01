@@ -38,23 +38,29 @@ typedef std::map<std::string,std::string> KeyMap;
 
 static KeyMap InitKeyMap() {
   KeyMap result;
+  // 1st row
   result["`"] = "Backquote";
-  result["\\"] = "Backslash";
+  result["-"] = "Minus";
+  result["="] = "Equal";
+  // 2nd row
+  result["\t"] = "Tab";
   result["["] = "BracketLeft";
   result["]"] = "BracketRight";
-  result[","] = "Comma";
-  result["="] = "Equal";
-  result["-"] = "Minus";
-  result["."] = "Period";
-  result["'"] = "Quote";
+  result["\\"] = "Backslash";
+  // 3rd row
   result[";"] = "Semicolon";
+  result["'"] = "Quote";
+  // 4th row
+  result[","] = "Comma";
+  result["."] = "Period";
   result["/"] = "Slash";
   result["\n"] = "Enter";
-  result["\t"] = "Tab";
+  // arrows
   result["UP"] = "ArrowUp";
   result["DOWN"] = "ArrowDown";
   result["LEFT"] = "ArrowLeft";
   result["RIGHT"] = "ArrowRight";
+  // misc
   result["ESC"] = "Escape";
   // backward compatible for 0.12.x
   result["MEDIANEXTTRACK"] = "MediaTrackNext";
@@ -105,11 +111,14 @@ int GetModifiersFromTextArray(const std::vector<std::string>& v, std::vector<std
   int modifiers_value = ui::EF_NONE;
   std::vector<std::string>::const_iterator it = v.begin();
   for(; it != v.end(); it++) {
-    if (base::LowerCaseEqualsASCII(*it, "ctrl")) {
+    if (base::LowerCaseEqualsASCII(*it, "ctrl")
+      || base::LowerCaseEqualsASCII(*it, "control")) {
       modifiers_value |= ui::EF_CONTROL_DOWN;
     } else if (base::LowerCaseEqualsASCII(*it, "shift")){
       modifiers_value |= ui::EF_SHIFT_DOWN ;
-    } else if (base::LowerCaseEqualsASCII(*it, "alt")){
+    } else if (base::LowerCaseEqualsASCII(*it, "alt")
+      || base::LowerCaseEqualsASCII(*it, "alternate")
+      || base::LowerCaseEqualsASCII(*it, "option")){
       modifiers_value |= ui::EF_ALT_DOWN;
     } else if (base::LowerCaseEqualsASCII(*it, "super")
      || base::LowerCaseEqualsASCII(*it, "cmd")

@@ -65,11 +65,10 @@ Get the `key` of a `Shortcut`. It is a string to specify the shortcut key, like 
 
 Following key modifiers are supported. And all modifiers are **case insensitive**.
 
-* `Ctrl`: <kbd>Ctrl</kbd>
-* `Alt`: <kbd>Alt</kbd>
+* `Ctrl` / `Control`: <kbd>Ctrl</kbd>
+* `Alt` / `Alternate` / `Option`: <kbd>Alt</kbd>
 * `Shift`: <kbd>Shift</kbd>
-* `Command`: `Command` modifier maps to Apple key (<kbd>&#8984;</kbd>) on Mac, and maps to the Windows key on MS Windows and Linux.
-* `Cmd`, `Super`: aliases to `Command`
+* `Command` / `Cmd` / `Super`: `Command` modifier maps to Apple key (<kbd>&#8984;</kbd>) on Mac, and maps to the Windows key (<kbd>⊞</kbd>) on MS Windows and Linux.
 
 ### Supported Keys
 
@@ -77,12 +76,12 @@ All key listed in [W3C DOM Level 3 KeyboardEvent Key Values](http://www.w3.org/T
 
 Keys are **case insensitive** and you can have **exactly one key**.
 
-* Alphabet: `a`-`z`
-* Digits: `0`-`9`
-* Other keys on main area: `[` , `]` , `'` , `,` , `.` , `/` , `` ` `` , `-` , `=` , `\` , `'` , `;`
-* Functional Keys: `Esc`
-* Arrow Keys: `Down` , `Up` , `Left` , `Right`
-* Media Keys: `MediaNextTrack`, `MediaPrevTrack` (backward compatible with 0.12.x)
+* Alphabet: `a`-`z` (i.e. `KeyA`-`KeyZ` in W3C standard)
+* Digits: `0`-`9` (i.e. `Digit0`-`Digit9` in W3C standard)
+* Other keys on main area: `[` , `]` , `'` , `,` , `.` , `/` , `` ` `` , `-` , `=` , `\` , `'` , `;`, `\n`, `\t`
+* Functional Keys: `Esc` (i.e. `Escape` in W3C standard)
+* Arrow Keys: `Down` , `Up` , `Left` , `Right` (i.e. `Arrow?` in W3C standard)
+* Media Keys: `MediaNextTrack`, `MediaPrevTrack` (backward compatible with 0.12.x) (i.e. `MediaTrackNext` and `MediaTrackPrevious`)
 
 ## shortcut.active
 
