@@ -52,22 +52,6 @@ bool NwAppQuitFunction::RunAsync() {
   return true;
 }
 
-bool NwAppCloseAllWindowsFunction::RunAsync() {
-  AppWindowRegistry* registry = AppWindowRegistry::Get(browser_context());
-  if (!registry)
-    return false;
-
-  AppWindowRegistry::AppWindowList windows =
-    registry->GetAppWindowsForApp(extension()->id());
-
-  for (AppWindow* window : windows) {
-    if (window->NWCanClose())
-      window->GetBaseWindow()->Close();
-  }
-  SendResponse(true);
-  return true;
-}
-
 NwAppGetArgvSyncFunction::NwAppGetArgvSyncFunction() {
 }
 

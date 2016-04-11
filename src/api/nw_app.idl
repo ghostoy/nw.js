@@ -16,7 +16,7 @@ namespace nw.App {
                                            EventCallback callback);
     [nocompile] static void removeAllListeners(DOMString event);
     static void quit();
-    static void closeAllWindows();
+    [nocompile] static void closeAllWindows(optional boolean force);
     static void clearCache();
     static void setProxyConfig(DOMString config);
     [nocompile] static DOMString getProxyForURL(DOMString url);

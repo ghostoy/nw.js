@@ -105,6 +105,20 @@ nw_binding.registerCustomHook(function(bindingsAPI) {
   apiFunctions.setHandleRequest('getDataPath', function() {
     return sendRequest.sendRequestSync('nw.App.getDataPath', [], this.definition.parameters, {})[0];
   });
+  apiFunctions.setHandleRequest('quit', function() {
+    // close all windows first so that the gemoetries are stored properly
+    // see https://github.com/nwjs/nw.js/issues/4686
+    nw.App.closeAllWindows(true);
+    return sendRequest.sendRequestSync('nw.App.quit', [], this.definition.parameters, {})[0];
+  });
+  apiFunctions.setHandleRequest('closeAllWindows', function(force) {
+    for(let win of chrome.app.window.getAll()) {
+      if (win && win.contentWindow) {
+        let nwWin = nw.Window.get(win.contentWindow);
+        nwWin.close(force);
+      }
+    }
+  });
   bindingsAPI.compiledApi.__defineGetter__('dataPath', function() {
     if (!dataPath)
       dataPath = nw.App.getDataPath();

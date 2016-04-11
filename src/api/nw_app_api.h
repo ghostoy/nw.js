@@ -23,18 +23,6 @@ class NwAppQuitFunction : public AsyncExtensionFunction {
   void Callback();
 };
 
-class NwAppCloseAllWindowsFunction : public AsyncExtensionFunction {
- public:
-  NwAppCloseAllWindowsFunction() {}
-
- protected:
-  ~NwAppCloseAllWindowsFunction() override {}
-
-  // ExtensionFunction:
-  bool RunAsync() override;
-  DECLARE_EXTENSION_FUNCTION("nw.App.closeAllWindows", UNKNOWN)
-};
-
 class NwAppGetArgvSyncFunction : public NWSyncExtensionFunction {
  public:
   NwAppGetArgvSyncFunction();
