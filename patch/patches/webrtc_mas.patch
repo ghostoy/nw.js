@@ -1,0 +1,119 @@
+diff --git a/modules/video_capture/BUILD.gn b/modules/video_capture/BUILD.gn
+index 78f5212..51bcbde 100644
+--- modules/video_capture/BUILD.gn
++++ modules/video_capture/BUILD.gn
+@@ -91,6 +91,15 @@ if (!build_with_chromium) {
+       deps += [ "../..:webrtc_common" ]
+     }
+     if (is_mac) {
++      if (nwjs_mas) {
++        sources = [
++          "mac/video_capture_mac.mm"
++        ]
++
++        libs = [
++          "CoreVideo.framework"
++        ]
++      } else {
+       sources = [
+         "mac/qtkit/video_capture_qtkit.h",
+         "mac/qtkit/video_capture_qtkit.mm",
+@@ -108,6 +117,7 @@ if (!build_with_chromium) {
+         "CoreVideo.framework",
+         "QTKit.framework",
+       ]
++      }
+     }
+     if (is_win) {
+       sources = [
+diff --git a/modules/video_capture/mac/video_capture_mac.mm b/modules/video_capture/mac/video_capture_mac.mm
+index 08b2aeb..1bb85aa 100644
+--- modules/video_capture/mac/video_capture_mac.mm
++++ modules/video_capture/mac/video_capture_mac.mm
+@@ -22,6 +22,7 @@
+ #include "webrtc/modules/video_capture/video_capture_impl.h"
+ #include "webrtc/system_wrappers/include/trace.h"
+ 
++#if !defined(NWJS_MAS)
+ // 10.4 support must be decided runtime. We will just decide which framework to
+ // use at compile time "work" classes. One for QTKit, one for QuickTime
+ #if __MAC_OS_X_VERSION_MIN_REQUIRED == __MAC_10_4 // QuickTime version
+@@ -31,6 +32,7 @@
+ #include "webrtc/modules/video_capture/mac/qtkit/video_capture_qtkit.h"
+ #include "webrtc/modules/video_capture/mac/qtkit/video_capture_qtkit_info.h"
+ #endif
++#endif // !defined(NWJS_MAS)
+ 
+ namespace webrtc
+ {
+@@ -188,6 +190,12 @@ bool CheckQTVersion()
+ {
+ 
+ 
++#if defined(NWJS_MAS)
++    WEBRTC_TRACE(webrtc::kTraceError, webrtc::kTraceVideoCapture, id,
++                     "QTKit is disabled in MAS. Could not create video capture "
++                     "module. Returning NULL");
++    return NULL;
++#else
+     if (webrtc::videocapturemodule::CheckOSVersion() == false)
+     {
+         WEBRTC_TRACE(webrtc::kTraceError, webrtc::kTraceVideoCapture, id,
+@@ -240,7 +248,7 @@ bool CheckQTVersion()
+     return newCaptureInfoModule;
+ 
+ #endif
+-
++#endif // defined(NWJS_MAS)
+ }
+ 
+ /**************************************************************************
+diff --git a/modules/video_capture/video_capture.gypi b/modules/video_capture/video_capture.gypi
+index a2b2f58..f9e6b0d 100644
+--- modules/video_capture/video_capture.gypi
++++ modules/video_capture/video_capture.gypi
+@@ -70,6 +70,7 @@
+             }],  # linux
+             ['OS=="mac"', {
+               'sources': [
++                'mac/video_capture_mac.mm',
+                 'mac/qtkit/video_capture_qtkit.h',
+                 'mac/qtkit/video_capture_qtkit.mm',
+                 'mac/qtkit/video_capture_qtkit_info.h',
+@@ -79,7 +80,6 @@
+                 'mac/qtkit/video_capture_qtkit_objc.h',
+                 'mac/qtkit/video_capture_qtkit_objc.mm',
+                 'mac/qtkit/video_capture_qtkit_utility.h',
+-                'mac/video_capture_mac.mm',
+               ],
+               'link_settings': {
+                 'xcode_settings': {
+@@ -90,6 +90,28 @@
+                   ],
+                 },
+               },
++              'conditions': [
++                ['nwjs_mas==1', {
++                  'sources!': [
++                    'mac/qtkit/video_capture_qtkit.h',
++                    'mac/qtkit/video_capture_qtkit.mm',
++                    'mac/qtkit/video_capture_qtkit_info.h',
++                    'mac/qtkit/video_capture_qtkit_info.mm',
++                    'mac/qtkit/video_capture_qtkit_info_objc.h',
++                    'mac/qtkit/video_capture_qtkit_info_objc.mm',
++                    'mac/qtkit/video_capture_qtkit_objc.h',
++                    'mac/qtkit/video_capture_qtkit_objc.mm',
++                    'mac/qtkit/video_capture_qtkit_utility.h',
++                  ],
++                  'link_settings': {
++                    'xcode_settings': {
++                      'OTHER_LDFLAGS!': [
++                        '-framework QTKit',
++                      ],
++                    },
++                  },
++                }]
++              ]
+             }],  # mac
+             ['OS=="win"', {
+               'dependencies': [
