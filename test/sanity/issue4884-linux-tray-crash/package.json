@@ -1,0 +1,7 @@
+{
+  "name": "issue4884-linux-tray-crash",
+  "main": "index.html",
+  "window": {
+    "icon": "icon.png"
+  }
+}

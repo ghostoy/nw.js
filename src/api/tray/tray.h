@@ -89,9 +89,6 @@ class Tray : public Base {
   // Callback invoked when user right-clicks on the status icon.
   CHROMEGTK_CALLBACK_2(Tray, void, OnPopupMenu, guint, guint);
 #elif defined(OS_WIN) || defined(OS_LINUX)
-  // The global presentation of system tray.
-  static StatusTray* status_tray_;
-
   // The icons on the system tray.
   StatusIcon* status_icon_;
 
