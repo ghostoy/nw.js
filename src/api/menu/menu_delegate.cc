@@ -72,7 +72,7 @@ bool MenuDelegate::GetAcceleratorForCommandId(
       int command_id,
       ui::Accelerator* accelerator) {
   MenuItem* item = object_manager_->GetApiObject<MenuItem>(command_id);
-  if (!item)
+  if (!item || !item->enable_shortcut_)
     return false;
 
   *accelerator = item->accelerator_;

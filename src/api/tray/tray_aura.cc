@@ -33,12 +33,33 @@
 #include "content/nw/src/nw_base.h"
 #include "content/nw/src/nw_content.h"
 #include "content/nw/src/nw_package.h"
+#include "ui/base/resource/resource_bundle.h"
 #include "ui/gfx/screen.h"
 #include "ui/gfx/image/image.h"
 
+#include "chrome/grit/chrome_unscaled_resources.h"
+
+#if defined(OS_WIN)
+#include "chrome/browser/app_icon_win.h"
+#include "ui/gfx/icon_util.h"
+#endif
+
 namespace nw {
 
-StatusTray* Tray::status_tray_ = NULL;
+namespace {
+StatusTray* status_tray_ = NULL;
+
+gfx::ImageSkia GetStatusTrayIcon() {
+#if defined(OS_WIN)
+  HICON app_icon = GetSmallAppIcon();
+  return gfx::ImageSkia::CreateFrom1xBitmap(*IconUtil::CreateSkBitmapFromHICON(app_icon));
+#else
+  return *ui::ResourceBundle::GetSharedInstance().GetImageSkiaNamed(
+      IDR_STATUS_TRAY_ICON);
+#endif
+}
+
+}
 
 class TrayObserver : public StatusIconObserver {
  public:
@@ -69,7 +90,8 @@ void Tray::Create(const base::DictionaryValue& option) {
     status_tray_ = g_browser_process->status_tray();
 
   status_icon_ = status_tray_->CreateStatusIcon(StatusTray::NOTIFICATION_TRAY_ICON,
-                                                gfx::ImageSkia(), base::string16());
+                                                GetStatusTrayIcon(),
+                                                base::string16());
   status_observer_ = new TrayObserver(this);
   status_icon_->AddObserver(status_observer_);
 }
