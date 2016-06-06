@@ -13,6 +13,10 @@
 #include "ui/views/layout/box_layout.h"
 #include "ui/views/widget/widget.h"
 
+#if defined(OS_WIN)
+#include "ui/gfx/color_utils.h"
+#endif
+
 using views::MenuRunner;
 
 #if !defined(OS_WIN)
@@ -24,7 +28,7 @@ static const gfx::ElideBehavior kElideBehavior = gfx::ELIDE_TAIL;
 
 namespace nw {
 
-const char MenuBarView::kViewClassName[] = "BookmarkBarView";
+const char MenuBarView::kViewClassName[] = "MenuBarView";
 
 // MenuBarButton  -------------------------------------------------------
 
@@ -44,6 +48,13 @@ class MenuBarButton : public views::MenuButton {
     if (label()->GetPreferredSize().width() > label()->size().width())
       *tooltip = GetText();
     return !tooltip->empty();
+  }
+
+  void OnNativeThemeChanged(const ui::NativeTheme* theme) override {
+    views::MenuButton::OnNativeThemeChanged(theme);
+    // Menu button uses same colors of menu item
+    SetEnabledTextColors(GetNativeTheme()->
+        GetSystemColor(ui::NativeTheme::kColorId_EnabledMenuItemForegroundColor));
   }
 
  private:
@@ -107,8 +118,16 @@ void MenuBarView::ButtonPressed(views::Button* sender,
 }
 
 void MenuBarView::OnNativeThemeChanged(const ui::NativeTheme* theme) {
+  // Use `COLOR_MENUBAR` instead of kColorId_MenuBackgroundColor on Windows
+#if defined(OS_WIN)
+  set_background(views::Background::CreateSolidBackground(color_utils::GetSysSkColor(COLOR_MENUBAR)));
+#else
   set_background(views::Background::CreateSolidBackground(GetNativeTheme()->
        GetSystemColor(ui::NativeTheme::kColorId_MenuBackgroundColor)));
+#endif
+  SchedulePaint();
 }
+
+const char* MenuBarView::GetClassName() const { return kViewClassName; }
 
 } //namespace nw

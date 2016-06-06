@@ -32,6 +32,10 @@ class MenuBarController : public views::MenuModelAdapter {
   void ExecuteCommand(int id) override;
   void ExecuteCommand(int id, int mouse_event_flags) override;
 
+  bool GetBackgroundColor(int command_id,
+                          bool is_hovered,
+                          SkColor* override_color) const override;
+
  private:
   typedef std::map<const ui::MenuModel*, views::MenuItemView*> ModelToMenuMap;
 

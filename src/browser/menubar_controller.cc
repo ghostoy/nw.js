@@ -7,6 +7,10 @@
 #include "ui/views/controls/menu/menu_item_view.h"
 #include "ui/views/widget/widget.h"
 
+#if defined(OS_WIN)
+#include "ui/gfx/color_utils.h"
+#endif
+
 namespace nw {
 
 MenuBarController::ModelToMenuMap MenuBarController::model_to_menu_map_;
@@ -102,6 +106,22 @@ void MenuBarController::RunMenuAt(views::View* view, const gfx::Point& point) {
                                        views::MENU_ANCHOR_TOPLEFT,
                                        ui::MENU_SOURCE_NONE));
   delete this;
+}
+
+bool MenuBarController::GetBackgroundColor(int command_id,
+                                      bool is_hovered,
+                                      SkColor* override_color) const {
+  if (!is_hovered) {
+#if defined(OS_WIN)
+    *override_color = color_utils::GetSysSkColor(COLOR_MENU);
+#else
+    *override_color = menubar_->GetNativeTheme()->
+         GetSystemColor(ui::NativeTheme::kColorId_MenuBackgroundColor);
+#endif
+    return true;
+  }
+
+  return false;
 }
 
 } //namespace nw
