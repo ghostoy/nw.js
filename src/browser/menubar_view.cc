@@ -24,7 +24,7 @@ static const gfx::ElideBehavior kElideBehavior = gfx::ELIDE_TAIL;
 
 namespace nw {
 
-const char MenuBarView::kViewClassName[] = "BookmarkBarView";
+const char MenuBarView::kViewClassName[] = "MenuBarView";
 
 // MenuBarButton  -------------------------------------------------------
 
@@ -44,6 +44,11 @@ class MenuBarButton : public views::MenuButton {
     if (label()->GetPreferredSize().width() > label()->size().width())
       *tooltip = GetText();
     return !tooltip->empty();
+  }
+
+  void OnNativeThemeChanged(const ui::NativeTheme* theme) override {
+    views::MenuButton::OnNativeThemeChanged(theme);
+    SetEnabledTextColors(theme->GetSystemColor(ui::NativeTheme::kColorId_EnabledMenuItemForegroundColor));
   }
 
  private:
@@ -107,8 +112,10 @@ void MenuBarView::ButtonPressed(views::Button* sender,
 }
 
 void MenuBarView::OnNativeThemeChanged(const ui::NativeTheme* theme) {
-  set_background(views::Background::CreateSolidBackground(GetNativeTheme()->
+  // Use menu background color for menubar
+  set_background(views::Background::CreateSolidBackground(theme->
        GetSystemColor(ui::NativeTheme::kColorId_MenuBackgroundColor)));
+  SchedulePaint();
 }
 
 } //namespace nw
