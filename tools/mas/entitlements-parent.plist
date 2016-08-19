@@ -5,12 +5,10 @@
   <!-- [REQUIRED] Sandbox -->
   <key>com.apple.security.app-sandbox</key>
   <true/>
-  <!-- [REQUIRED] IPC and Crash Reporter -->
+  <!-- [REQUIRED] IPC -->
   <key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
   <array>
     <string>$BUNDLEID.rohitfork</string>
-    <string>$BUNDLEID.crashpad.child_port_handshake</string>
-    <string>com.apple.ReportCrash</string>
   </array>
 
   <!-- [OPTIONAL] Network -->
